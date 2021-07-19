@@ -1,1 +1,1 @@
-# JS_Final_Project
+# city-snapshot-frontend
