@@ -70,13 +70,13 @@ function getCountryCurrency(country) {
 }
 
 function getCurrencyConversionRate(currency) {
-    fetch("https://api.currencylayer.com/live?access_key=b88d321319e26e9720d1e34d93782783&format=1")
+    fetch("https://v6.exchangerate-api.com/v6/95d8a9ea62e4ba64bb10e0db/latest/USD")
     .then(req => req.json())
     .then(data => {
-        const rate = data.quotes[`USD${currency}`];
+        const rate = data.conversion_rates[currency];
         // console.log(rate);
         currency_message = document.createElement("p")
-        currency_message.innerHTML = `Currency Exchange Rate is ${rate} ${currency}`
+        currency_message.innerHTML = `Currency Exchange Rate is ${rate} ${currency} to 1 USD`
         document.getElementById("result_container").append(currency_message)
         })
     }
