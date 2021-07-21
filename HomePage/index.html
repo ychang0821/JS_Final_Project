@@ -10,6 +10,15 @@
     <script defer src="./homepage_script.js"></script>
 </head>
 <body>
+    <header style="display: flex; flex-direction: column; align-content: center; text-align: center; background-color: lemonchiffon;">
+        <h1>City Snapshot</h1>
+        <p>View your favorite city's top events restaurants and weather all in one place</p>
+    </header>
+    <div class="search-div" style="display: flex; flex-direction: row; -ms-flex-align: center;">
+        <input type="search" id="site-search" name="q"
+        aria-label="Search through site content" style="width: 80em;" placeholder="Search for a city">
+        <button>Search</button>
+    </div>
     <div>
         <div id="result_container"></div>
         <div id="weatherCard_container"></div>
