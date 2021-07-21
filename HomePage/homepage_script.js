@@ -70,7 +70,7 @@ function getCountryCurrency(country) {
 }
 
 function getCurrencyConversionRate(currency) {
-    fetch("http://api.currencylayer.com/live?access_key=b88d321319e26e9720d1e34d93782783&format=1")
+    fetch("https://api.currencylayer.com/live?access_key=b88d321319e26e9720d1e34d93782783&format=1")
     .then(req => req.json())
     .then(data => {
         const rate = data.quotes[`USD${currency}`];
