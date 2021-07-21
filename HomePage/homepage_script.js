@@ -6,9 +6,9 @@ fetch(WEATHER_API_URL)
         weather_object = {};
         for (let i = 0; i <= 6; i++) {
             const { high_temp, low_temp, valid_date, pop, weather } = result.data[i];
-            console.log(valid_date);
+            // console.log(valid_date);
             const date = new Date(valid_date);
-            console.log(date);
+            // console.log(date);
             const weekday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             const dayOfWeek = weekday[date.getDay()];
 
@@ -59,3 +59,32 @@ getResult()
         document.getElementById("result_container").appendChild(resultDiv);
 
     })
+
+function getCountryCurrency(country) {
+    fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+    .then(req => req.json())
+    .then(data => {
+        const currencyCode = data[0].currencies[0].code;
+        getCurrencyConversionRate(currencyCode)
+    })
+}
+
+function getCurrencyConversionRate(currency) {
+    fetch("http://api.currencylayer.com/live?access_key=b88d321319e26e9720d1e34d93782783&format=1")
+    .then(req => req.json())
+    .then(data => {
+        const rate = data.quotes[`USD${currency}`];
+        // console.log(rate);
+        currency_message = document.createElement("p")
+        currency_message.innerHTML = `Currency Exchange Rate is ${rate} ${currency}`
+        document.getElementById("result_container").append(currency_message)
+        })
+    }
+    getCountryCurrency("Brazil")
+
+// function calculateCurrency(amount, country) {
+//     const currency = getCountryCurrency(country)
+//     const rate = getCurrencyConversionRate(currency);
+//     return amount * rate;
+// }
+// console.log(calculateCurrency(70, "japan"))
