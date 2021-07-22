@@ -1,3 +1,15 @@
-.search-div{
-    background-color: aqua;
+#weatherCard_container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.city_container {
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    padding: 50px;
+}
+
+.top_events{
+    display: flex;
+    flex-direction: row;
 }

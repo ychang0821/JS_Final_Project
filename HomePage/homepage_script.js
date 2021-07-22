@@ -17,7 +17,8 @@ fetch(WEATHER_API_URL)
 
             const weatherCard = document.createElement("div");
             weatherCard.classList.add("card");
-            weatherCard.style.width = "18rem";
+            weatherCard.classList.add("text-center");
+            weatherCard.style.width = "9rem";
 
             weatherCard.innerHTML = `
                 <h4>${dayOfWeek}</h4>
@@ -26,9 +27,9 @@ fetch(WEATHER_API_URL)
             
                 <div class="card-body">
             
-                <p class="card-text">High Temperature: ${high_temp} &#8457</p>
+                <p class="card-text">High: ${high_temp} &#8457</p>
             
-                <p class="card-text">Low Temperature: ${low_temp} &#8457</p>
+                <p class="card-text">Low: ${low_temp} &#8457</p>
             
                 <p class="card-text">Precipitation: ${pop} %</p>
             
@@ -88,3 +89,11 @@ function getCurrencyConversionRate(currency) {
 //     return amount * rate;
 // }
 // console.log(calculateCurrency(70, "japan"))
+
+
+//restaurants
+const Documenu = require('documenu');
+Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
+
+console.log(Documenu.Restaurants.getByState('NY'));
+

@@ -1,0 +1,23 @@
+{
+  "name": "city_snapshot_frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "documenu": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ychang0821/city_snapshot_frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ychang0821/city_snapshot_frontend/issues"
+  },
+  "homepage": "https://github.com/ychang0821/city_snapshot_frontend#readme"
+}
