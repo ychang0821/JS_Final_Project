@@ -3,6 +3,59 @@ const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
 
 
+document.querySelector("#sign_up_form").addEventListener("submit", handleFormSubmit);
+document.querySelector("#signin").addEventListener("submit", signInHandler);
+
+function signInHandler(event) {
+    event.preventDefault();
+    const name = event.target.elements["name"].value;
+    const email = event.target.elements["email"].value;
+    const password = event.target.elements["password"].value;
+    const signInInfo = {username: name, email: email, password: password};
+    fetch('https://city-snapshot.herokuapp.com/user/login', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(signInInfo)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Login Successful');
+        console.log(data)})
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+}
+
+function handleFormSubmit(event) {
+    event.preventDefault();
+    const name = event.target.elements["name"].value;
+    const email = event.target.elements["email"].value;
+    const password = event.target.elements["password"].value;
+    const signUpInfo = {username: name, email: email, password: password};
+
+    fetch('https://city-snapshot.herokuapp.com/user/signup', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(signUpInfo)
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert('Account Created!')
+      console.log('Success:', data)
+      document.location.href = 'signin.html';
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// getNearbyEvents('seattle')
+
+
 navigator.geolocation.getCurrentPosition(position => {
     const { latitude, longitude } = position.coords;
     // Show a map centered at latitude / longitude.
@@ -187,7 +240,20 @@ function getCurrencyConversionRate(currency) {
 //     const rate = getCurrencyConversionRate(currency);
 //     return amount * rate;
 // }
+
+// console.log(calculateCurrency(70, "japan"))
+
+
+
+//restaurants
+// const Documenu = require('documenu');
+// Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
+
+// console.log(Documenu.Restaurants.getByState('NY'));
+
+
 const Documenu = require('documenu');
 Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
 
 console.log(Documenu.Restaurants.getByState('NY'));
+
