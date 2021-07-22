@@ -2,7 +2,57 @@ const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?city=lond
 const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
 
-getNearbyEvents('seattle')
+document.querySelector("#sign_up_form").addEventListener("submit", handleFormSubmit);
+document.querySelector("#signin").addEventListener("submit", signInHandler);
+
+function signInHandler(event) {
+    event.preventDefault();
+    const name = event.target.elements["name"].value;
+    const email = event.target.elements["email"].value;
+    const password = event.target.elements["password"].value;
+    const signInInfo = {username: name, email: email, password: password};
+    fetch('https://city-snapshot.herokuapp.com/user/login', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(signInInfo)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Login Successful');
+        console.log(data)})
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+}
+
+function handleFormSubmit(event) {
+    event.preventDefault();
+    const name = event.target.elements["name"].value;
+    const email = event.target.elements["email"].value;
+    const password = event.target.elements["password"].value;
+    const signUpInfo = {username: name, email: email, password: password};
+
+    fetch('https://city-snapshot.herokuapp.com/user/signup', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(signUpInfo)
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert('Account Created!')
+      console.log('Success:', data)
+      document.location.href = 'signin.html';
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// getNearbyEvents('seattle')
 /*
 fetch(WEATHER_API_URL)
     .then(res => res.json())
@@ -174,8 +224,8 @@ function getCurrencyConversionRate(currency) {
 
 
 //restaurants
-const Documenu = require('documenu');
-Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
+// const Documenu = require('documenu');
+// Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
 
-console.log(Documenu.Restaurants.getByState('NY'));
+// console.log(Documenu.Restaurants.getByState('NY'));
 
