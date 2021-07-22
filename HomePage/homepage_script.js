@@ -1,5 +1,9 @@
 const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?city=london&key=c4b16440bcb0427b9cc88cdce6d66263&days=7&units=I';
+const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
+const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
 
+getNearbyEvents('seattle')
+/*
 fetch(WEATHER_API_URL)
     .then(res => res.json())
     .then(result => {
@@ -38,6 +42,83 @@ fetch(WEATHER_API_URL)
             document.getElementById("weatherCard_container").appendChild(weatherCard);
         }
     })
+*/
+    function getNearbyEvents(city) {
+        //add country parameter
+        //insert if statement to check if country is USA
+        //if(country === 'United States of America') {
+        fetch(`${EVENT_API_URL}city=${city}&apikey=${EVENT_API_KEY}`)
+        .then(res => res.json())
+        .then(result => {
+            event_object = {};
+            for(let i = 0; i<=4; i++) {
+                const name = result._embedded.events[i].name;
+                const date = result._embedded.events[i].dates.start.localDate;
+                const time = result._embedded.events[i].dates.start.localTime;
+                const url = result._embedded.events[i].url;
+
+                const timeValue = convertTime(time);
+                const convertedDate = convertDate(date);
+
+                const eventCard = document.createElement("div");
+                eventCard.classList.add("card");
+                eventCard.style.width = "18rem";
+
+                eventCard.innerHTML = `
+                    <div class="card-body">
+            
+                    <p class="card-text">${name}</p>
+            
+                    <p class="card-text">Date: ${convertedDate}</p>
+            
+                    <p class="card-text">Time: ${timeValue}</p>
+
+                    <p class="card-text">Tickets: ${url}</p>
+            
+                    </div>
+            `
+            document.getElementById("eventCard_container").appendChild(eventCard);
+            }
+        })
+    
+    }
+
+    function convertTime(time) {
+        var time = time.split(':');
+        var hours = time[0];
+        var minutes = time[1];
+        var seconds = time[2];
+
+        var timeValue;
+
+        if(hours > 0 && hours <=12) {
+            timeValue="" + hours;
+        }
+        else if (hours > 12) {
+            timeValue = "" + (hours - 12)
+        }
+        else if (hours == 0) {
+            timeValue = "12";
+        }
+
+        timeValue += ":" + minutes;
+        timeValue += (hours >= 12) ? " P.M." : " A.M.";
+
+        return timeValue;
+    }
+
+    function convertDate(date) {
+        var date = date.split("-");
+        var year = date[0];
+        var month = date[1];
+        var day = date[2];
+
+        var convertedDate = "";
+
+        convertedDate += month + "-" + day + "-" + year;
+        return convertedDate;
+    }
+
 
 
 async function getResult() {
@@ -89,6 +170,7 @@ function getCurrencyConversionRate(currency) {
 //     return amount * rate;
 // }
 // console.log(calculateCurrency(70, "japan"))
+
 
 
 //restaurants
