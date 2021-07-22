@@ -1,7 +1,26 @@
-const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?city=london&key=c4b16440bcb0427b9cc88cdce6d66263&days=7&units=I';
+const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?';
 const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
+const WEATHER_API_KEY = 'c4b16440bcb0427b9cc88cdce6d66263'
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
 
+
+document.getElementById("city-form").addEventListener("submit", handleSubmit) 
+
+function handleSubmit(e) {
+    e.preventDefault();
+    const searchCity = e.target.q.value;
+
+    console.log(searchCity);
+
+    e.target.q.value = "";
+
+    document.getElementById('eventCard_container').innerHTML = "";
+    document.getElementById('weatherCard_container').innerHTML = "";
+    
+    getNearbyEvents(searchCity);
+    getWeather(searchCity);
+
+}
 
 document.querySelector("#sign_up_form").addEventListener("submit", handleFormSubmit);
 document.querySelector("#signin").addEventListener("submit", signInHandler);
@@ -53,7 +72,6 @@ function handleFormSubmit(event) {
     });
 }
 
-// getNearbyEvents('seattle')
 
 
 navigator.geolocation.getCurrentPosition(position => {
@@ -75,7 +93,8 @@ navigator.geolocation.getCurrentPosition(position => {
   });
 getNearbyEvents('seattle')
 /*
-fetch(WEATHER_API_URL)
+function getWeather(city){
+fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
     .then(res => res.json())
     .then(result => {
         weather_object = {};
@@ -113,7 +132,8 @@ fetch(WEATHER_API_URL)
             document.getElementById("weatherCard_container").appendChild(weatherCard);
         }
     })
-*/
+}
+
     function getNearbyEvents(city) {
         //add country parameter
         //insert if statement to check if country is USA
@@ -122,7 +142,7 @@ fetch(WEATHER_API_URL)
         .then(res => res.json())
         .then(result => {
             event_object = {};
-            for(let i = 0; i<=4; i++) {
+            for(let i = 0; i<=2; i++) {
                 const name = result._embedded.events[i].name;
                 const date = result._embedded.events[i].dates.start.localDate;
                 const time = result._embedded.events[i].dates.start.localTime;
