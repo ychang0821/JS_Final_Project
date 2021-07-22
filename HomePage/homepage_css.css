@@ -13,3 +13,10 @@
     display: flex;
     flex-direction: row;
 }
+
+#center_box {
+    margin: auto;
+    width: 30%;
+    border-style:double;
+    padding: 50px;
+}
