@@ -2,6 +2,24 @@ const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?city=lond
 const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
 
+
+navigator.geolocation.getCurrentPosition(position => {
+    const { latitude, longitude } = position.coords;
+    // Show a map centered at latitude / longitude.
+    const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/geo?lat=' + latitude + '&lon=' + longitude + '&distance=10&size=3&page=1&key=a8a15bac1ce132aae9e0e7432be21789'
+    fetch(RESTAURANTS_API_URL)
+    .then(res => res.json())
+    .then(result => {
+        console.log(result.data);
+        for(let i = 0; i < 3; i++){
+            let res = result.data[i];
+            let resultParagraph = document.createElement('p');
+            resultParagraph.innerHTML = res.restaurant_name
+            let resultsDiv = document.getElementById("restaurants_list_div");
+            resultsDiv.append(resultParagraph);
+        }
+    });
+  });
 getNearbyEvents('seattle')
 /*
 fetch(WEATHER_API_URL)
@@ -169,13 +187,7 @@ function getCurrencyConversionRate(currency) {
 //     const rate = getCurrencyConversionRate(currency);
 //     return amount * rate;
 // }
-// console.log(calculateCurrency(70, "japan"))
-
-
-
-//restaurants
 const Documenu = require('documenu');
 Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
 
 console.log(Documenu.Restaurants.getByState('NY'));
-
