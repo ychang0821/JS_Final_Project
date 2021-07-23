@@ -161,22 +161,11 @@ function getInitialEvents(latitude, longitude) {
                 const timeValue = convertTime(time);
                 const convertedDate = convertDate(date);
 
-                const eventCard = document.createElement("div");
-                eventCard.classList.add("card");
+                const eventCard = document.createElement("p");
                 eventCard.style.width = "18rem";
 
                 eventCard.innerHTML = `
-                    <div class="card-body">
-            
-                    <p class="card-text">${name}</p>
-            
-                    <p class="card-text">Date: ${convertedDate}</p>
-            
-                    <p class="card-text">Time: ${timeValue}</p>
-
-                    <p class="card-text">Tickets: ${url}</p>
-            
-                    </div>
+                    <a class="card-text" href="${url}">${name}</a>
             `
             document.getElementById("eventCard_container").appendChild(eventCard);
             }
@@ -277,22 +266,11 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
                 const timeValue = convertTime(time);
                 const convertedDate = convertDate(date);
 
-                const eventCard = document.createElement("div");
-                eventCard.classList.add("card");
+                const eventCard = document.createElement("p");
                 eventCard.style.width = "18rem";
 
                 eventCard.innerHTML = `
-                    <div class="card-body">
-            
-                    <p class="card-text">${name}</p>
-            
-                    <p class="card-text">Date: ${convertedDate}</p>
-            
-                    <p class="card-text">Time: ${timeValue}</p>
-
-                    <p class="card-text">Tickets: ${url}</p>
-            
-                    </div>
+                    <a class="card-text" href="${url}">${name}</a>
             `
             document.getElementById("eventCard_container").appendChild(eventCard);
             }
