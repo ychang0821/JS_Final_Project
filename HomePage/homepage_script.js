@@ -1,9 +1,13 @@
 const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?';
 const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
+const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/';
+
 const WEATHER_API_KEY = 'c4b16440bcb0427b9cc88cdce6d66263'
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
+const RESTAURANTS_API_KEY = 'a8a15bac1ce132aae9e0e7432be21789';
+populatePageWithGeolocation();
 
-
+//takes the user input city and applies it to the NearbyEvents and Weather functions
 document.getElementById("city-form").addEventListener("submit", handleSubmit) 
 
 function handleSubmit(e) {
@@ -16,10 +20,11 @@ function handleSubmit(e) {
 
     document.getElementById('eventCard_container').innerHTML = "";
     document.getElementById('weatherCard_container').innerHTML = "";
+    document.getElementById('restaurants_list_div').innerHTML = "";
     
     getNearbyEvents(searchCity);
     getWeather(searchCity);
-
+    getRestaurants(searchCity);
 }
 
 document.querySelector("#sign_up_form").addEventListener("submit", handleFormSubmit);
@@ -72,13 +77,118 @@ function handleFormSubmit(event) {
     });
 }
 
+//uses geolocation to populate the page with users local weather, events, and restuarants
+function populatePageWithGeolocation() {
+    navigator.geolocation.getCurrentPosition(position => {
+        const {latitude, longitude} = position.coords;
+        getInitialRestaurants(latitude, longitude);
+        getInitialWeather(latitude, longitude);
+        getInitialEvents(latitude, longitude);
+        
+    })
+}
+
+//called in populatePageWithGeolocation to set up the default page
+function getInitialRestaurants(latitude, longitude) {
+    fetch(`${RESTAURANTS_API_URL}geo?lat=${latitude}&lon=${longitude}&distance=25&size=3&page=1&key=${RESTAURANTS_API_KEY}`)
+    .then(res => res.json())
+    .then(result => {
+        console.log(result.data);
+        for(let i = 0; i < 3; i++){
+            let res = result.data[i];
+            let resultParagraph = document.createElement('p');
+            resultParagraph.innerHTML = res.restaurant_name
+            let resultsDiv = document.getElementById("restaurants_list_div");
+            resultsDiv.append(resultParagraph);
+        }
+    });
+}
+
+//called in populatePageWithGeolocation to set up the default page
+function getInitialWeather(latitude, longitude) {
+    fetch(`${WEATHER_API_URL}&lat=${latitude}&lon=${longitude}&key=${WEATHER_API_KEY}&days=7&units=I`)
+    .then(res => res.json())
+    .then(result => {
+        weather_object = {};
+        for (let i = 0; i <= 6; i++) {
+            const { high_temp, low_temp, valid_date, pop, weather } = result.data[i];
+            // console.log(valid_date);
+            const date = new Date(valid_date);
+            // console.log(date);
+            const weekday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            const dayOfWeek = weekday[date.getDay()];
 
 
+            weather_object[i] = { high_temp: high_temp, low_temp: low_temp, valid_date: valid_date, precipitation: pop, weather: weather }
+
+            const weatherCard = document.createElement("div");
+            weatherCard.classList.add("card");
+            weatherCard.classList.add("text-center");
+            weatherCard.style.width = "9rem";
+
+            weatherCard.innerHTML = `
+                <h4>${dayOfWeek}</h4>
+                <p>${valid_date}</p>
+                <img class="card-img-top" src="../icons/${weather.icon}.png" alt="Card image cap">
+            
+                <div class="card-body">
+            
+                <p class="card-text">High: ${high_temp} &#8457</p>
+            
+                <p class="card-text">Low: ${low_temp} &#8457</p>
+            
+                <p class="card-text">Precipitation: ${pop} %</p>
+            
+                </div>
+            `
+            document.getElementById("weatherCard_container").appendChild(weatherCard);
+        }
+    })
+}
+
+//called in populatePageWithGeolocation to set up the default page
+function getInitialEvents(latitude, longitude) {
+    fetch(`${EVENT_API_URL}latlong=${latitude},${longitude}&apikey=${EVENT_API_KEY}`)
+        .then(res => res.json())
+        .then(result => {
+            event_object = {};
+            for(let i = 0; i<=2; i++) {
+                const name = result._embedded.events[i].name;
+                const date = result._embedded.events[i].dates.start.localDate;
+                const time = result._embedded.events[i].dates.start.localTime;
+                const url = result._embedded.events[i].url;
+
+                const timeValue = convertTime(time);
+                const convertedDate = convertDate(date);
+
+                const eventCard = document.createElement("div");
+                eventCard.classList.add("card");
+                eventCard.style.width = "18rem";
+
+                eventCard.innerHTML = `
+                    <div class="card-body">
+            
+                    <p class="card-text">${name}</p>
+            
+                    <p class="card-text">Date: ${convertedDate}</p>
+            
+                    <p class="card-text">Time: ${timeValue}</p>
+
+                    <p class="card-text">Tickets: ${url}</p>
+            
+                    </div>
+            `
+            document.getElementById("eventCard_container").appendChild(eventCard);
+            }
+        })
+}
+
+/*
 navigator.geolocation.getCurrentPosition(position => {
     const { latitude, longitude } = position.coords;
     // Show a map centered at latitude / longitude.
-    const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/geo?lat=' + latitude + '&lon=' + longitude + '&distance=10&size=3&page=1&key=a8a15bac1ce132aae9e0e7432be21789'
-    fetch(RESTAURANTS_API_URL)
+    //const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/geo?lat=' + latitude + '&lon=' + longitude + '&distance=10&size=3&page=1&key=a8a15bac1ce132aae9e0e7432be21789'
+    fetch(`${RESTAURANTS_API_URL}lat=${latitude}&lon=${longitude}&distance=25&size=3&page=1&key=${RESTAURANTS_API_KEY}`)
     .then(res => res.json())
     .then(result => {
         console.log(result.data);
@@ -91,8 +201,26 @@ navigator.geolocation.getCurrentPosition(position => {
         }
     });
   });
-getNearbyEvents('seattle')
-/*
+*/
+
+//fetches 3 restaurants near the user input city
+function getRestaurants(city) {
+    fetch(`${RESTAURANTS_API_URL}fields?address=${city}&key=${RESTAURANTS_API_KEY}`)
+    .then(res => res.json())
+    .then(result => {
+        console.log(result.data);
+        for(let i = 0; i < 3; i++){
+            let res = result.data[i];
+            let resultParagraph = document.createElement('p');
+            resultParagraph.innerHTML = res.restaurant_name
+            let resultsDiv = document.getElementById("restaurants_list_div");
+            resultsDiv.append(resultParagraph);
+}
+    });
+};
+
+
+//fetches next 7 days weather for desired city from weather api
 function getWeather(city){
 fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
     .then(res => res.json())
@@ -134,10 +262,8 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
     })
 }
 
+//fetches nearby events for desired city from ticketmaster api
     function getNearbyEvents(city) {
-        //add country parameter
-        //insert if statement to check if country is USA
-        //if(country === 'United States of America') {
         fetch(`${EVENT_API_URL}city=${city}&apikey=${EVENT_API_KEY}`)
         .then(res => res.json())
         .then(result => {
@@ -174,6 +300,8 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
     
     }
 
+
+    //converts the 24 hour time from api to 12 hour time (AM/PM)
     function convertTime(time) {
         var time = time.split(':');
         var hours = time[0];
@@ -198,6 +326,7 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
         return timeValue;
     }
 
+    //converts date from api to (mm-dd-yyyy)
     function convertDate(date) {
         var date = date.split("-");
         var year = date[0];
