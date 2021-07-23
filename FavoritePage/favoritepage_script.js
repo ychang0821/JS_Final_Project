@@ -24,7 +24,7 @@ function renderFavorites() {
                 let res = restaurantArr[i];
                 let restaurant_div = document.createElement('div')
                 restaurant_div.innerHTML = `
-                <input type="checkbox" id="${res.name}" checked>
+                <input type="checkbox" id="${res.name}" onchange="deleteRestaurantHandler('${res._id}')" checked>
                 <label for="${res.name}">${res.name}</label>
                 `
                 let resultsDiv = document.getElementById("restaurants_list_div");
@@ -33,10 +33,10 @@ function renderFavorites() {
 
             for(let i = 0; i<eventsArr.length; i++) {
                 let name = eventsArr[i].name;
-               
+                const id = eventsArr[i]._id;
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
-                <input type="checkbox" id="${name}" checked>
+                <input type="checkbox" id="${name}" onchange="deleteEventHandler('${id}')"checked>
                 <label for="${name}">${name}</label>
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
@@ -48,11 +48,14 @@ function renderFavorites() {
                 const newButton = document.createElement("button")
                 newButton.setAttribute("value", citiesArr[i].name)
                 newButton.setAttribute("onclick", "getWeather(this.value)")
+                newButton.setAttribute("class", "btn btn-primary")
                 newButton.innerHTML = citiesArr[i].name
                 document.getElementById("favorites_city_container").appendChild(newButton)
 
                 const newDeleteButton = document.createElement("button")
                 newDeleteButton.setAttribute("value", citiesArr[i]._id)
+                newDeleteButton.setAttribute("class", "btn btn-danger")
+                
                 newDeleteButton.setAttribute("onclick", "deleteCityHandler(this.value)")
                 newDeleteButton.innerHTML = `Delete ${citiesArr[i].name}`
                 document.getElementById("favorites_city_container").appendChild(newDeleteButton)

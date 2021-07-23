@@ -4,15 +4,29 @@ const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
 const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/';
 
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
-const RESTAURANTS_API_KEY = 'a8a15bac1ce132aae9e0e7432be21789';
+// const RESTAURANTS_API_KEY = 'a8a15bac1ce132aae9e0e7432be21789';
+const RESTAURANTS_API_KEY = '47ad131500db3750319627c17e9bb8c7';
 populatePageWithGeolocation();
 
 //takes the user input city and applies it to the NearbyEvents and Weather functions
 document.getElementById("city-form").addEventListener("submit", handleSubmit) 
 
+function placeInitialSaveButton() {
+    let cityButton = document.createElement("button")
+    cityButton.setAttribute("value", "Seattle")
+    cityButton.setAttribute("onclick", "submitCity(this.value)")
+    cityButton.innerHTML = "Save"
+
+    const parentEl = document.getElementById("save_city");
+    parentEl.appendChild(cityButton)
+}
+
+
+
 function handleSubmit(e) {
     e.preventDefault();
     document.getElementById('save_city').innerHTML = "";
+    document.getElementById("city_container_header").innerHTML = "";
     const searchCity = e.target.q.value;
     let cityTitle = document.createElement("h2")
     cityTitle.innerHTML = searchCity;
@@ -35,12 +49,12 @@ function handleSubmit(e) {
     document.getElementById('weatherCard_container').innerHTML = "";
     document.getElementById('restaurants_list_div').innerHTML = "";
 
-    document.getElementById("city_container_header").innerHTML = "";
+    // document.getElementById("city_container_header").innerHTML = "";
 
-    let cityTitle = document.createElement("h1");
-        cityTitle.innerText = searchCity;
-        console.log(cityTitle);
-        document.getElementById("city_container_header").append(cityTitle);
+    // let cityTitle = document.createElement("h1");
+    //     cityTitle.innerText = searchCity;
+    //     console.log(cityTitle);
+    //     document.getElementById("city_container_header").append(cityTitle);
     getNearbyEvents(searchCity);
     getWeather(searchCity);
     getRestaurants(searchCity);
@@ -69,7 +83,7 @@ function getInitialRestaurants(latitude, longitude) {
             let res = result.data[i];
             let restaurant_div = document.createElement('div')
             restaurant_div.innerHTML = `
-            <input type="button" id="${res.restaurant_name}" value="💓">
+            <input type="button" id="${res.restaurant_name}" value="💓" onclick="addRestaurantHandler(this.id)">
             <label for="${res.restaurant_name}">${res.restaurant_name}</label>
             `
             let resultsDiv = document.getElementById("restaurants_list_div");
@@ -77,7 +91,7 @@ function getInitialRestaurants(latitude, longitude) {
         }
     });
 }
-
+placeInitialSaveButton();
 //called in populatePageWithGeolocation to set up the default page
 function getInitialWeather(latitude, longitude) {
     fetch(`${WEATHER_API_URL}&lat=${latitude}&lon=${longitude}&key=${WEATHER_API_KEY}&days=7&units=I`)
@@ -133,7 +147,7 @@ function getInitialEvents(latitude, longitude) {
                 let url = result._embedded.events[i].url;
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
-                <input type="button" id="${name}" value='💓'>
+                <input type="button" id="${name}" value='💓' onclick="addEventHandler(this.id)>
                 <label for="${name}">${name}</label>
                 <label> <a class="card-text" href="${url}">Order Tickets</a>
                 </label>
@@ -150,12 +164,12 @@ function getRestaurants(city) {
     fetch(`${RESTAURANTS_API_URL}fields?address=${city}&key=${RESTAURANTS_API_KEY}`)
     .then(res => res.json())
     .then(result => {
-        console.log(result.data);
+        // console.log(result.data);
         for(let i = 0; i < 3; i++){
             let res = result.data[i];
             let restaurant_div = document.createElement('div')
             restaurant_div.innerHTML = `
-            <input type="button" id="${res.restaurant_name}" value="💓">
+            <input type="button" id="${res.restaurant_name}" value="💓" onclick="addRestaurantHandler(this.id)">
             <label for="${res.restaurant_name}">${res.restaurant_name}</label>
             `
             let resultsDiv = document.getElementById("restaurants_list_div");
@@ -214,10 +228,10 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
             event_object = {};
             for(let i = 0; i<=2; i++) {
                 let name = result._embedded.events[i].name;
-               
+                let url = result._embedded.events[i].url;
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
-                <input type="button" id="${name}" value="💓">
+                <input type="button" id="${name}" value="💓" onclick="addEventHandler(this.id)">
                 <label for="${name}" >${name}</label>
                 <label> <a class="card-text" href="${url}">Order Tickets</a>
                 </label>
@@ -243,26 +257,26 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
 
 
 
-async function getResult() {
-    const URL = "http://localhost:3000/"
+// async function getResult() {
+//     const URL = "http://localhost:3000/"
 
-    const response = await fetch(URL)
-    const result = await response.json();
+//     const response = await fetch(URL)
+//     const result = await response.json();
 
-    return result;
-}
+//     return result;
+// }
 
-getResult()
-    .then(result => {
-        const message = result.message;
-        const resultDiv = document.createElement("div")
-        resultDiv.innerHTML = `
-            <h4>${message}</h4>
-            `
+// getResult()
+//     .then(result => {
+//         const message = result.message;
+//         const resultDiv = document.createElement("div")
+//         resultDiv.innerHTML = `
+//             <h4>${message}</h4>
+//             `
 
-        document.getElementById("result_container").appendChild(resultDiv);
+//         document.getElementById("result_container").appendChild(resultDiv);
 
-    })
+//     })
 
 function getCountryCurrency(country) {
     fetch(`https://restcountries.eu/rest/v2/name/${country}`)
@@ -327,6 +341,45 @@ function submitCity(city) {
         console.error('Error:', error);
     })
 }
+
+function addEventHandler(name){
+    const eventInfo = {name: name, dates: "", start_time: "", url: "", id: ""};
+    fetch("https://city-snapshot.herokuapp.com/event/me/events", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem("token")
+        },
+        body: JSON.stringify(eventInfo)
+    })
+    .then((res) => res.json())
+    .then(data => {
+        alert('Added event to Database');
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+}
+
+function addRestaurantHandler(name){
+    const restaurantInfo = {name: name};
+    fetch("https://city-snapshot.herokuapp.com/restaurant/me/restaurants", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem("token")
+        },
+        body: JSON.stringify(restaurantInfo)
+    })
+    .then((res) => res.json())
+    .then(data => {
+        alert('Added restaurant to Database');
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+}
+
 
 function goToFavorites() {
     document.location.href = './favorites.html'
