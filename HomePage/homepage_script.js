@@ -35,9 +35,12 @@ function handleSubmit(e) {
     document.getElementById('weatherCard_container').innerHTML = "";
     document.getElementById('restaurants_list_div').innerHTML = "";
 
-    
- 
-    
+    document.getElementById("city_container_header").innerHTML = "";
+
+    let cityTitle = document.createElement("h1");
+        cityTitle.innerText = searchCity;
+        console.log(cityTitle);
+        document.getElementById("city_container_header").append(cityTitle);
     getNearbyEvents(searchCity);
     getWeather(searchCity);
     getRestaurants(searchCity);
@@ -59,12 +62,14 @@ function getInitialRestaurants(latitude, longitude) {
     fetch(`${RESTAURANTS_API_URL}geo?lat=${latitude}&lon=${longitude}&distance=25&size=3&page=1&key=${RESTAURANTS_API_KEY}`)
     .then(res => res.json())
     .then(result => {
-        console.log(result.data);
+        let cityTitle = document.createElement("h1");
+        cityTitle.innerHTML = result.data[0].address.city;
+        document.getElementById("city_container_header").append(cityTitle);
         for(let i = 0; i < 3; i++){
             let res = result.data[i];
             let restaurant_div = document.createElement('div')
             restaurant_div.innerHTML = `
-            <input type="checkbox" id="${res.restaurant_name}" checked>
+            <input type="button" id="${res.restaurant_name}" value="💓">
             <label for="${res.restaurant_name}">${res.restaurant_name}</label>
             `
             let resultsDiv = document.getElementById("restaurants_list_div");
@@ -87,8 +92,9 @@ function getInitialWeather(latitude, longitude) {
             const weekday = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             const dayOfWeek = weekday[date.getDay()];
 
+            const convertedDate = convertDate(result.data[i].valid_date);
 
-            weather_object[i] = { high_temp: high_temp, low_temp: low_temp, valid_date: valid_date, precipitation: pop, weather: weather }
+            weather_object[i] = { high_temp: high_temp, low_temp: low_temp, valid_date: convertedDate, precipitation: pop, weather: weather }
 
             const weatherCard = document.createElement("div");
             weatherCard.classList.add("card");
@@ -124,10 +130,13 @@ function getInitialEvents(latitude, longitude) {
             for(let i = 0; i<=2; i++) {
 
                 let name = result._embedded.events[i].name;
+                let url = result._embedded.events[i].url;
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
-                <input type="checkbox" id="${name}" checked>
+                <input type="button" id="${name}" value='💓'>
                 <label for="${name}">${name}</label>
+                <label> <a class="card-text" href="${url}">Order Tickets</a>
+                </label>
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
                 eventsDiv.appendChild(event_div)
@@ -146,7 +155,7 @@ function getRestaurants(city) {
             let res = result.data[i];
             let restaurant_div = document.createElement('div')
             restaurant_div.innerHTML = `
-            <input type="checkbox" id="${res.restaurant_name}" checked>
+            <input type="button" id="${res.restaurant_name}" value="💓">
             <label for="${res.restaurant_name}">${res.restaurant_name}</label>
             `
             let resultsDiv = document.getElementById("restaurants_list_div");
@@ -208,39 +217,15 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
                
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
-                <input type="checkbox" id="${name}" checked>
-                <label for="${name}">${name}</label>
+                <input type="button" id="${name}" value="💓">
+                <label for="${name}" >${name}</label>
+                <label> <a class="card-text" href="${url}">Order Tickets</a>
+                </label>
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
                 eventsDiv.appendChild(event_div)
             }
         })
-    }
-
-
-    //converts the 24 hour time from api to 12 hour time (AM/PM)
-    function convertTime(time) {
-        var time = time.split(':');
-        var hours = time[0];
-        var minutes = time[1];
-        var seconds = time[2];
-
-        var timeValue;
-
-        if(hours > 0 && hours <=12) {
-            timeValue="" + hours;
-        }
-        else if (hours > 12) {
-            timeValue = "" + (hours - 12)
-        }
-        else if (hours == 0) {
-            timeValue = "12";
-        }
-
-        timeValue += ":" + minutes;
-        timeValue += (hours >= 12) ? " P.M." : " A.M.";
-
-        return timeValue;
     }
 
     //converts date from api to (mm-dd-yyyy)
