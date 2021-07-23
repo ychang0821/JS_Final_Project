@@ -96,10 +96,13 @@ function getInitialRestaurants(latitude, longitude) {
         console.log(result.data);
         for(let i = 0; i < 3; i++){
             let res = result.data[i];
-            let resultParagraph = document.createElement('p');
-            resultParagraph.innerHTML = res.restaurant_name
+            let restaurant_div = document.createElement('div')
+            restaurant_div.innerHTML = `
+            <input type="checkbox" id="${res.restaurant_name}" checked>
+            <label for="${res.restaurant_name}">${res.restaurant_name}</label>
+            `
             let resultsDiv = document.getElementById("restaurants_list_div");
-            resultsDiv.append(resultParagraph);
+            resultsDiv.appendChild(restaurant_div);
         }
     });
 }
@@ -153,55 +156,25 @@ function getInitialEvents(latitude, longitude) {
         .then(result => {
             event_object = {};
             for(let i = 0; i<=2; i++) {
-                const name = result._embedded.events[i].name;
-                const date = result._embedded.events[i].dates.start.localDate;
-                const time = result._embedded.events[i].dates.start.localTime;
-                const url = result._embedded.events[i].url;
+                let name = result._embedded.events[i].name;
+                /*
+                let date = result._embedded.events[i].dates.start.localDate;
+                let time = result._embedded.events[i].dates.start.localTime;
+                let url = result._embedded.events[i].url;
 
-                const timeValue = convertTime(time);
-                const convertedDate = convertDate(date);
-
-                const eventCard = document.createElement("div");
-                eventCard.classList.add("card");
-                eventCard.style.width = "18rem";
-
-                eventCard.innerHTML = `
-                    <div class="card-body">
-            
-                    <p class="card-text">${name}</p>
-            
-                    <p class="card-text">Date: ${convertedDate}</p>
-            
-                    <p class="card-text">Time: ${timeValue}</p>
-
-                    <p class="card-text">Tickets: ${url}</p>
-            
-                    </div>
-            `
-            document.getElementById("eventCard_container").appendChild(eventCard);
+                let timeValue = convertTime(time);
+                let convertedDate = convertDate(date);
+*/
+                let event_div = document.createElement('div')
+                event_div.innerHTML = `
+                <input type="checkbox" id="${name}" checked>
+                <label for="${name}">${name}</label>
+                `
+                let eventsDiv = document.getElementById("eventCard_container");
+                eventsDiv.appendChild(event_div)
             }
         })
 }
-
-/*
-navigator.geolocation.getCurrentPosition(position => {
-    const { latitude, longitude } = position.coords;
-    // Show a map centered at latitude / longitude.
-    //const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/geo?lat=' + latitude + '&lon=' + longitude + '&distance=10&size=3&page=1&key=a8a15bac1ce132aae9e0e7432be21789'
-    fetch(`${RESTAURANTS_API_URL}lat=${latitude}&lon=${longitude}&distance=25&size=3&page=1&key=${RESTAURANTS_API_KEY}`)
-    .then(res => res.json())
-    .then(result => {
-        console.log(result.data);
-        for(let i = 0; i < 3; i++){
-            let res = result.data[i];
-            let resultParagraph = document.createElement('p');
-            resultParagraph.innerHTML = res.restaurant_name
-            let resultsDiv = document.getElementById("restaurants_list_div");
-            resultsDiv.append(resultParagraph);
-        }
-    });
-  });
-*/
 
 //fetches 3 restaurants near the user input city
 function getRestaurants(city) {
@@ -211,14 +184,16 @@ function getRestaurants(city) {
         console.log(result.data);
         for(let i = 0; i < 3; i++){
             let res = result.data[i];
-            let resultParagraph = document.createElement('p');
-            resultParagraph.innerHTML = res.restaurant_name
+            let restaurant_div = document.createElement('div')
+            restaurant_div.innerHTML = `
+            <input type="checkbox" id="${res.restaurant_name}" checked>
+            <label for="${res.restaurant_name}">${res.restaurant_name}</label>
+            `
             let resultsDiv = document.getElementById("restaurants_list_div");
-            resultsDiv.append(resultParagraph);
+            resultsDiv.appendChild(restaurant_div);
 }
     });
 };
-
 
 //fetches next 7 days weather for desired city from weather api
 function getWeather(city){
@@ -269,35 +244,24 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
         .then(result => {
             event_object = {};
             for(let i = 0; i<=2; i++) {
-                const name = result._embedded.events[i].name;
-                const date = result._embedded.events[i].dates.start.localDate;
-                const time = result._embedded.events[i].dates.start.localTime;
-                const url = result._embedded.events[i].url;
+                let name = result._embedded.events[i].name;
+                /*
+                let date = result._embedded.events[i].dates.start.localDate;
+                let time = result._embedded.events[i].dates.start.localTime;
+                let url = result._embedded.events[i].url;
 
-                const timeValue = convertTime(time);
-                const convertedDate = convertDate(date);
-
-                const eventCard = document.createElement("div");
-                eventCard.classList.add("card");
-                eventCard.style.width = "18rem";
-
-                eventCard.innerHTML = `
-                    <div class="card-body">
-            
-                    <p class="card-text">${name}</p>
-            
-                    <p class="card-text">Date: ${convertedDate}</p>
-            
-                    <p class="card-text">Time: ${timeValue}</p>
-
-                    <p class="card-text">Tickets: ${url}</p>
-            
-                    </div>
-            `
-            document.getElementById("eventCard_container").appendChild(eventCard);
-            }
+                let timeValue = convertTime(time);
+                let convertedDate = convertDate(date);
+*/
+                let event_div = document.createElement('div')
+                event_div.innerHTML = `
+                <input type="checkbox" id="${name}" checked>
+                <label for="${name}">${name}</label>
+                `
+                let eventsDiv = document.getElementById("eventCard_container");
+                eventsDiv.appendChild(event_div)
+        }
         })
-    
     }
 
 
