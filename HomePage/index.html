@@ -15,6 +15,7 @@
     <header style="display: flex; flex-direction: column; align-content: center; text-align: center; background-color: lemonchiffon;">
         <h1>City Snapshot</h1>
         <p>View your favorite city's top events restaurants and weather all in one place</p>
+        <button id="favorites_button"onclick="goToFavorites()">Favorites</button>
     </header>
     <form class="d-flex justify-content-center" id="city-form">
         <div class="search-div" style="display: flex; flex-direction: row; -ms-flex-align: center;">
@@ -25,6 +26,7 @@
     </form>
     <div style="height: 2em;"></div>
         <div class="city_container">
+          <div id="save_city"></div>
             <div class="container-fluid">
                 <div id="result_container"></div>
                 <div id="weatherCard_container"></div>

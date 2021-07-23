@@ -1,8 +1,8 @@
 const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily?';
+const WEATHER_API_KEY = 'c4b16440bcb0427b9cc88cdce6d66263'
 const EVENT_API_URL = 'https://app.ticketmaster.com/discovery/v2/events.json?';
 const RESTAURANTS_API_URL = 'https://api.documenu.com/v2/restaurants/search/';
 
-const WEATHER_API_KEY = 'c4b16440bcb0427b9cc88cdce6d66263'
 const EVENT_API_KEY ='ULnge4RhAQVQjajspAYnv87RNIGGUZI7';
 const RESTAURANTS_API_KEY = 'a8a15bac1ce132aae9e0e7432be21789';
 populatePageWithGeolocation();
@@ -12,8 +12,21 @@ document.getElementById("city-form").addEventListener("submit", handleSubmit)
 
 function handleSubmit(e) {
     e.preventDefault();
+    document.getElementById('save_city').innerHTML = "";
     const searchCity = e.target.q.value;
+    let cityTitle = document.createElement("h2")
+    cityTitle.innerHTML = searchCity;
 
+    
+
+    let cityButton = document.createElement("button")
+    cityButton.setAttribute("value", searchCity)
+    cityButton.setAttribute("onclick", "submitCity(this.value)")
+    cityButton.innerHTML = "Save"
+
+    const parentEl = document.getElementById("save_city");
+    parentEl.appendChild(cityTitle)
+    parentEl.appendChild(cityButton)
     console.log(searchCity);
 
     e.target.q.value = "";
@@ -21,60 +34,13 @@ function handleSubmit(e) {
     document.getElementById('eventCard_container').innerHTML = "";
     document.getElementById('weatherCard_container').innerHTML = "";
     document.getElementById('restaurants_list_div').innerHTML = "";
+
+    
+ 
     
     getNearbyEvents(searchCity);
     getWeather(searchCity);
     getRestaurants(searchCity);
-}
-
-document.querySelector("#sign_up_form").addEventListener("submit", handleFormSubmit);
-document.querySelector("#signin").addEventListener("submit", signInHandler);
-
-function signInHandler(event) {
-    event.preventDefault();
-    const name = event.target.elements["name"].value;
-    const email = event.target.elements["email"].value;
-    const password = event.target.elements["password"].value;
-    const signInInfo = {username: name, email: email, password: password};
-    fetch('https://city-snapshot.herokuapp.com/user/login', {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(signInInfo)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert('Login Successful');
-        console.log(data)})
-    .catch((error) => {
-        console.error('Error:', error);
-    })
-}
-
-function handleFormSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements["name"].value;
-    const email = event.target.elements["email"].value;
-    const password = event.target.elements["password"].value;
-    const signUpInfo = {username: name, email: email, password: password};
-
-    fetch('https://city-snapshot.herokuapp.com/user/signup', {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(signUpInfo)
-    })
-    .then(response => response.json())
-    .then(data => {
-      alert('Account Created!')
-      console.log('Success:', data)
-      document.location.href = 'signin.html';
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
 }
 
 //uses geolocation to populate the page with users local weather, events, and restuarants
@@ -165,12 +131,6 @@ function getInitialEvents(latitude, longitude) {
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
                 eventsDiv.appendChild(event_div)
-                eventCard.style.width = "18rem";
-
-                eventCard.innerHTML = `
-                    <a class="card-text" href="${url}">${name}</a>
-            `
-            document.getElementById("eventCard_container").appendChild(eventCard);
 
             }
         })
@@ -253,13 +213,6 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
                 eventsDiv.appendChild(event_div)
-        
-                eventCard.style.width = "18rem";
-
-                eventCard.innerHTML = `
-                    <a class="card-text" href="${url}">${name}</a>
-            `
-            document.getElementById("eventCard_container").appendChild(eventCard);
             }
         })
     }
@@ -346,7 +299,7 @@ function getCurrencyConversionRate(currency) {
         document.getElementById("result_container").append(currency_message)
         })
     }
-    getCountryCurrency("Brazil")
+    // getCountryCurrency("Brazil")
 
 // function calculateCurrency(amount, country) {
 //     const currency = getCountryCurrency(country)
@@ -369,4 +322,29 @@ const Documenu = require('documenu');
 Documenu.configure('17640bb9c7b77b247a896b12fff962cb');
 
 console.log(Documenu.Restaurants.getByState('NY'));
+
+function submitCity(city) {
+    const cityInfo = {name: city};
+    console.log(cityInfo)
+    fetch("https://city-snapshot.herokuapp.com/city/me/cities", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.getItem("token")
+        },
+        body: JSON.stringify(cityInfo)
+    })
+    .then((res) => res.json())
+    .then(data => {
+        alert('Added City to Database');
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+}
+
+function goToFavorites() {
+    document.location.href = './favorites.html'
+    renderFavorites()
+}
 
