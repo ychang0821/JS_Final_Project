@@ -156,15 +156,8 @@ function getInitialEvents(latitude, longitude) {
         .then(result => {
             event_object = {};
             for(let i = 0; i<=2; i++) {
-                let name = result._embedded.events[i].name;
-                /*
-                let date = result._embedded.events[i].dates.start.localDate;
-                let time = result._embedded.events[i].dates.start.localTime;
-                let url = result._embedded.events[i].url;
 
-                let timeValue = convertTime(time);
-                let convertedDate = convertDate(date);
-*/
+                let name = result._embedded.events[i].name;
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
                 <input type="checkbox" id="${name}" checked>
@@ -172,6 +165,13 @@ function getInitialEvents(latitude, longitude) {
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
                 eventsDiv.appendChild(event_div)
+                eventCard.style.width = "18rem";
+
+                eventCard.innerHTML = `
+                    <a class="card-text" href="${url}">${name}</a>
+            `
+            document.getElementById("eventCard_container").appendChild(eventCard);
+
             }
         })
 }
@@ -245,14 +245,7 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
             event_object = {};
             for(let i = 0; i<=2; i++) {
                 let name = result._embedded.events[i].name;
-                /*
-                let date = result._embedded.events[i].dates.start.localDate;
-                let time = result._embedded.events[i].dates.start.localTime;
-                let url = result._embedded.events[i].url;
-
-                let timeValue = convertTime(time);
-                let convertedDate = convertDate(date);
-*/
+               
                 let event_div = document.createElement('div')
                 event_div.innerHTML = `
                 <input type="checkbox" id="${name}" checked>
@@ -260,7 +253,14 @@ fetch(`${WEATHER_API_URL}city=${city}&key=${WEATHER_API_KEY}&days=7&units=I`)
                 `
                 let eventsDiv = document.getElementById("eventCard_container");
                 eventsDiv.appendChild(event_div)
-        }
+        
+                eventCard.style.width = "18rem";
+
+                eventCard.innerHTML = `
+                    <a class="card-text" href="${url}">${name}</a>
+            `
+            document.getElementById("eventCard_container").appendChild(eventCard);
+            }
         })
     }
 
