@@ -16,7 +16,9 @@ function signInHandler(event) {
     .then(response => response.json())
     .then(data => {
         alert('Login Successful');
-        console.log(data)})
+        localStorage.setItem("token", data.token)
+        document.location.href = 'index.html'
+    })
     .catch((error) => {
         console.error('Error:', error);
     })

@@ -22,3 +22,7 @@
     border-style:double;
     padding: 50px;
 }
+
+#favorites_button {
+    width: 100px
+}
